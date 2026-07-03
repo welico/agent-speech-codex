@@ -1,0 +1,51 @@
+{
+  "description": "Agent Speech for Codex lifecycle hooks.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/speak-hook.mjs\" Stop",
+            "timeout": 5,
+            "statusMessage": "Preparing speech"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/speak-hook.mjs\" SubagentStop",
+            "timeout": 5,
+            "statusMessage": "Preparing speech"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/speak-hook.mjs\" SessionEnd",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/speak-hook.mjs\" PermissionRequest",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

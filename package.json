@@ -1,0 +1,16 @@
+{
+  "name": "agent-speech-codex",
+  "version": "0.1.0",
+  "description": "macOS text-to-speech lifecycle hooks for Codex.",
+  "type": "module",
+  "bin": {
+    "agent-speech-codex": "./scripts/agent-speech.mjs"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
