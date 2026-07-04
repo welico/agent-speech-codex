@@ -9,6 +9,7 @@ import {
   parseHookInput,
   summarize,
   textForEvent,
+  validateLanguage,
   validateRate,
 } from '../lib/agent-speech.mjs';
 
@@ -44,9 +45,48 @@ test('extracts last assistant message from transcript_path', async () => {
   assert.equal(text, 'last answer');
 });
 
+test('extracts last assistant message from Codex response_item transcript', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'agent-speech-'));
+  const transcript = join(dir, 'codex-transcript.jsonl');
+  await writeFile(
+    transcript,
+    [
+      JSON.stringify({
+        type: 'response_item',
+        payload: {
+          type: 'message',
+          role: 'assistant',
+          content: [{ type: 'output_text', text: 'codex first' }],
+        },
+      }),
+      JSON.stringify({
+        type: 'response_item',
+        payload: {
+          type: 'message',
+          role: 'user',
+          content: [{ type: 'input_text', text: 'ignore me' }],
+        },
+      }),
+      JSON.stringify({
+        type: 'response_item',
+        payload: {
+          type: 'message',
+          role: 'assistant',
+          content: [{ type: 'output_text', text: 'codex last answer' }],
+        },
+      }),
+    ].join('\n'),
+  );
+
+  const text = await textForEvent('Stop', { transcript_path: transcript }, defaultConfig);
+  assert.equal(text, 'codex last answer');
+});
+
 test('parses raw stdin fallback and validates rate', () => {
   assert.deepEqual(parseHookInput('plain text'), { text: 'plain text' });
   assert.throws(() => validateRate(401), /rate/);
+  assert.equal(validateLanguage('ko'), 'ko');
+  assert.throws(() => validateLanguage('pt'), /language/);
 });
 
 test('summarizes first paragraph with max chars', () => {

@@ -19,9 +19,11 @@ of a Claude Code MCP server.
 ```text
 .codex-plugin/plugin.json   Codex plugin manifest
 hooks/hooks.json            Codex lifecycle hook config
+hooks.json                  Codex plugin hook discovery file
 hooks/speak-hook.mjs        Hook entrypoint
 scripts/agent-speech.mjs    Small CLI for config and manual tests
 lib/agent-speech.mjs        Shared TTS and hook logic
+commands/agent-speech.md    Slash command prompt
 skills/agent-speech/SKILL.md
 ```
 
@@ -34,8 +36,8 @@ codex plugin marketplace add https://github.com/welico/agent-speech-codex
 codex plugin add agent-speech-codex@welico
 ```
 
-The marketplace registers as `welico`. Codex loads the bundled
-`hooks/hooks.json` from the enabled plugin.
+The marketplace registers as `welico`. Codex loads the root `hooks.json` from
+the enabled plugin.
 
 ## CLI
 
@@ -45,22 +47,35 @@ node scripts/agent-speech.mjs status
 node scripts/agent-speech.mjs set-voice Samantha
 node scripts/agent-speech.mjs set-rate 200
 node scripts/agent-speech.mjs set-volume 50
+node scripts/agent-speech.mjs set-language ko
 node scripts/agent-speech.mjs enable
 node scripts/agent-speech.mjs disable
+node scripts/agent-speech.mjs toggle
+node scripts/agent-speech.mjs reset
 node scripts/agent-speech.mjs speak "Hello from Codex"
 node scripts/agent-speech.mjs list-voices
+```
+
+After plugin installation, Codex also exposes `/agent-speech` as a slash
+command:
+
+```text
+/agent-speech speak 안녕하세요.
+/agent-speech status
+/agent-speech set-language ko
 ```
 
 ## Config
 
 ```json
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "enabled": true,
   "voice": "Samantha",
+  "language": "en",
   "rate": 200,
   "volume": 50,
-  "minLength": 10,
+  "minLength": 1,
   "maxLength": 500,
   "filters": {
     "sensitive": false,

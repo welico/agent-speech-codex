@@ -1,6 +1,6 @@
 {
   "name": "agent-speech-codex",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "macOS text-to-speech lifecycle hooks for Codex.",
   "type": "module",
   "bin": {

@@ -6,6 +6,8 @@ import {
   loadConfig,
   saveConfig,
   speakText,
+  supportedLanguages,
+  validateLanguage,
   validateRate,
   validateLength,
   validateVolume,
@@ -19,10 +21,11 @@ function printHelp() {
 Usage:
   agent-speech-codex init
   agent-speech-codex status
-  agent-speech-codex enable|disable
+  agent-speech-codex enable|disable|toggle|reset
   agent-speech-codex set-voice <name>
   agent-speech-codex set-rate <50-400>
   agent-speech-codex set-volume <0-100>
+  agent-speech-codex set-language <en|ko|ja|zh-CN|es|fr|de|it>
   agent-speech-codex set-min-length <number>
   agent-speech-codex set-max-length <number>
   agent-speech-codex sensitive on|off
@@ -73,12 +76,34 @@ try {
       });
       console.log('disabled');
       break;
+    case 'toggle': {
+      const config = await update((next) => {
+        next.enabled = !next.enabled;
+      });
+      console.log(config.enabled ? 'enabled' : 'disabled');
+      break;
+    }
+    case 'reset':
+      await saveConfig(defaultConfig);
+      console.log(`reset config at ${configPath()}`);
+      break;
     case 'set-voice':
       await update((config) => {
         config.voice = requireArg(args[0], 'voice');
       });
       console.log(`voice=${args[0]}`);
       break;
+    case 'set-language': {
+      const language = validateLanguage(requireArg(args[0], 'language'));
+      const voice = supportedLanguages[language];
+      await update((config) => {
+        config.language = language;
+        config.voice = voice;
+      });
+      console.log(`language=${language}`);
+      console.log(`voice=${voice}`);
+      break;
+    }
     case 'set-rate':
       await update((config) => {
         config.rate = validateRate(Number(requireArg(args[0], 'rate')));
